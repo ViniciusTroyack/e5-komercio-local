@@ -6,16 +6,17 @@ app = Flask(__name__)
 @app.get('/products')
 def list_products():
 
-    page = request.args.get('page')
-    per_page = request.args.get('per_page')
+    page = int(request.args.get('page'))
+    per_page = int(request.args.get('per_page'))
+    list_len = len(lista_de_produtos)
 
     if page:
         if per_page:
-            return jsonify(lista_de_produtos[:int(per_page)])
+            paged_list = [lista_de_produtos[i:i+per_page] for i in range(0, list_len, per_page)]
 
-    return jsonify(lista_de_produtos)
+    return jsonify(paged_list[page-1])
 
-@app.get('/products/<product_id>')
+@app.get('/products')
 def get_product(product_id):
 
     output = [product for product in lista_de_produtos if product['id'] == int(product_id)]
